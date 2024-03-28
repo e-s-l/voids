@@ -1,0 +1,7 @@
+*******
+TO DOS:
+*******
+
+	- upload the most recent version of the f90 script
+	- refactor and optimise
+	- create py wrapper, maybe?
