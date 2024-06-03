@@ -14,8 +14,8 @@ gfortran -o voids.out void_parameters.o void_subroutines.o voids.o
 ./voids.out
 
 # plot some data
-echo "Plotting test data:"
-gnuplot -e "file='delta.ini.dat'" data_plotter.p
+echo "Plotting test data..."
+gnuplot -e "files='delta.LIN.dat delta.ini.dat' " data_plotter.p
 
 echo "Process Complete."
 
