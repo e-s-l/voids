@@ -38,20 +38,35 @@ PROGRAM voids
 
     !debug:
     logical, parameter ::  write_data = .true. 
-    logical, parameter ::  debug_mode = .true. 
+    logical, parameter ::  debug = .true. 
+
+
+
+    !!!
+    if (debug) then
+        if (linear_evolution_mode) then
+            print *, 'EVOLUTION: LIN'
+        endif
+        if (ltb_evolution_mode) then
+            print *, 'EVOLUTION: LTB'
+        endif
+        if (lrs_evolution_mode) then
+            print *, 'EVOLUTION: LRS'
+        endif
+    endif
+
+
 
     !!!!!!!!!!!!!!!!!!!
     ! INITIALISATIONS:
     !!!!!!!!!!!!!!!!!!!
-
-
 
     call timelcdm(zi, ti)
     call timelcdm(zf, tf)
 
     dt = (tf - ti) / (1.0*nt)
     !!!
-    if (debug_mode) then
+    if (debug) then
         print *, 'DEBUG: dt = ', dt
     endif
     !!!

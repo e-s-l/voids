@@ -1,3 +1,7 @@
+!
+! GLOBAL STATIC VARIABLES
+!
+
 MODULE void_parameters
     implicit none
 
