@@ -10,3 +10,5 @@ old/
 *.dat
 # exectuables prodcued from compilation (post linking)
 *.out
+# test images files for assessment
+*.png

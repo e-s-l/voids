@@ -26,4 +26,7 @@ WHATS THE POINT:
 WHAT'S THE STATUS:
 ******************
 
-	- 6-3-2024: linear version runs and works (produces ok output), ltb version needs to be checked and old lrs code integrated.
+	- 6-3-2024: 
+		- linear version runs and works (produces ok output)
+		- ltb version produces nonsense
+		- lrs code needs to be integrated.
