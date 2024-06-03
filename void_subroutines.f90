@@ -2,7 +2,9 @@ MODULE void_subroutines
 
     use void_parameters
     CONTAINS
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! LINEAR EVOLUTION
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         SUBROUTINE linear_evolution(rad, X)
             implicit none
@@ -45,7 +47,9 @@ MODULE void_subroutines
 
         END SUBROUTINE 
 
-!------
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! LEMAITRE TOLMAN BONDI EVOLUTION 
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         SUBROUTINE ltb_evolution(R_ltb,X)
             implicit none 
@@ -80,91 +84,69 @@ MODULE void_subroutines
 
             enddo
 
-
         END SUBROUTINE ltb_evolution
 
-                !----------------------------------------------------------------
         subroutine ltb_initial(r,rho,tht,shr,wey,m,mr,k,kr)
-        implicit none
+            implicit none
 
-        logical :: compensated 
+            logical :: compensated 
 
-        double precision Am,Ak,r0,dlr,amp,ho,Om
-        double precision dta0, dta1, dta2
-        double precision d0el,d1el,d2el
-        double precision m,mr,mrr
-        double precision k,kr,krr,cti
-        double precision r,rr,rt,rtr
-        double precision rho,tht,shr,wey,epr
+            double precision Am,Ak,r0,dlr,amp,ho,Om
+            double precision dta0, dta1, dta2
+            double precision d0el,d1el,d2el
+            double precision m,mr,mrr
+            double precision k,kr,krr,cti
+            double precision r,rr,rt,rtr
+            double precision rho,tht,shr,wey,epr
 
-        !compensated = .false.
-        compensated = .true.
+            !compensated = .false.
+            compensated = .true.
 
-    !    gkr=cpar(5)*cpar(18)
-    !    lb = cpar(7)
+        !    gkr=cpar(5)*cpar(18)
+        !    lb = cpar(7)
 
-        cti = ti
-        epr = 0.0d0
+            cti = ti
+            epr = 0.0d0
 
-        Om = omega_matter
-        amp = delta0
-        ho = Ho/cs
-        dlr = sigma0*r0
+            Om = omega_matter
+            amp = delta0
+            ho = Ho/cs
+            dlr = sigma0*r0
 
-     
-            
-        if(compensated) then 
-            Am = (1.0d0/6.0d0)*gkr
-            Ak = (10.0d0/3.0d0)*Am
-            dta0 = dtanh((r-r0)/(2.0d0*dlr))
-            dta1 = (1.0d0 - dta0**2)*(1.0d0/(2.0d0*dlr))
-            dta2 = -dta0*dta1/dlr
-            d0el = amp*0.5d0*(1.0d0 - dta0)
-            d1el = -amp*0.5d0*dta1
-            d2el = -amp*0.5d0*dta2
-            m = Am*(1 + d0el)*r*r*r
-            mr = Am*d1el*r*r*r + 3.0d0*(m/r)
-            mrr = Am*d2el*(r**3)+3d0*Am*d1el*r*r+3d0*(mr/r)-3.0d0*(m/(r*r))
-            k = Ak*d0el*r*r
-            kr = Ak*d1el*r*r + 2.0d0*(k/r)
-            krr = Ak*d2el*r*r+2.0d0*Ak*d1el*r+2.0d0*kr/r-2.0d0*(k/(r*r))
-        endif
-        r = r
-        rr = 1.0
-        rt = dsqrt(2.0d0*(m/r) - k + (lb/3.0d0)*r*r)
-        rtr = ((mr/r) - (m/(r**2))*rr - 0.5d0*kr + (lb/3d0)*r*rr)/rt
-        !- density 
-        rho = 2d0*(mr)/(r*r*(rr))
-        !- expansion 
-        tht =  (rtr + 2.0*rt*(rr/r))/(rr)
-        !- shear 
-        shr = -(2.0/3.0)*dsqrt( (((rtr - rt*(rr/r))/(rr) )**2) )
-        !- weyl   
-        wey =  -2*((m/r**3) - (1d0/6.0)*rho)
+        
+                
+            if(compensated) then 
+                Am = (1.0d0/6.0d0)*gkr
+                Ak = (10.0d0/3.0d0)*Am
+                dta0 = dtanh((r-r0)/(2.0d0*dlr))
+                dta1 = (1.0d0 - dta0**2)*(1.0d0/(2.0d0*dlr))
+                dta2 = -dta0*dta1/dlr
+                d0el = amp*0.5d0*(1.0d0 - dta0)
+                d1el = -amp*0.5d0*dta1
+                d2el = -amp*0.5d0*dta2
+                m = Am*(1 + d0el)*r*r*r
+                mr = Am*d1el*r*r*r + 3.0d0*(m/r)
+                mrr = Am*d2el*(r**3)+3d0*Am*d1el*r*r+3d0*(mr/r)-3.0d0*(m/(r*r))
+                k = Ak*d0el*r*r
+                kr = Ak*d1el*r*r + 2.0d0*(k/r)
+                krr = Ak*d2el*r*r+2.0d0*Ak*d1el*r+2.0d0*kr/r-2.0d0*(k/(r*r))
+            endif
+            r = r
+            rr = 1.0
+            rt = dsqrt(2.0d0*(m/r) - k + (lb/3.0d0)*r*r)
+            rtr = ((mr/r) - (m/(r**2))*rr - 0.5d0*kr + (lb/3d0)*r*rr)/rt
+            !- density 
+            rho = 2d0*(mr)/(r*r*(rr))
+            !- expansion 
+            tht =  (rtr + 2.0*rt*(rr/r))/(rr)
+            !- shear 
+            shr = -(2.0/3.0)*dsqrt( (((rtr - rt*(rr/r))/(rr) )**2) )
+            !- weyl   
+            wey =  -2*((m/r**3) - (1d0/6.0)*rho)
 
 
         end subroutine ltb_initial
 
-         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        subroutine timelcdm(zo, ctt) 
-            implicit none
-
-            double precision zo,rhb,rhzo,x,arsinh,tzo,ctt
-            double precision ztt,thb
-
-       !     print *, "gkr, lb = ", gkr, lb
-
-            rhzo = gkr*((1.0d0+zo)**3 )
-            x = dsqrt(lb/rhzo)
-            arsinh = dlog(x + dsqrt(x*x + 1d0))
-            ctt = (dsqrt((4d0)/(3d0*lb)))*arsinh
-
-        !    print *, "z,t = ", zo, ctt
-
-        end subroutine timelcdm
-
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         subroutine ltb_shell_evolution(r,m,mr,k,kr,re,rre)
             implicit none
@@ -185,8 +167,6 @@ MODULE void_subroutines
          !        print *, 'DEBUG: nt = ', nt
          !   endif
             !!!
-
-
            
             do I=1,nt
                 re = ri
@@ -221,78 +201,6 @@ MODULE void_subroutines
             
         end subroutine ltb_shell_evolution
 
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        subroutine write_X_to_file(counter,X)
-            implicit none
-
-            character(len=50) filename
-            integer, intent(inout) :: counter
-            double precision, dimension(nr,nx), intent(inout) :: X
-
-            write(filename, '(A,:,(I1), A)') 'X.lrs.',counter,'.dat' 
-            open(666, file=filename, status="replace")
-            write(666,*) X
-
-            counter = counter+1
-
-        end subroutine
-
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        subroutine write_delta_to_file(mode, counter, rad, X)
-            implicit none
-
-            character(len=50) filename
-            integer, intent(inout) :: counter
-            double precision, dimension(nr,nx), intent(inout) :: X
-            double precision, dimension(nr), intent(inout) :: rad
-            integer :: I
-            character(len=3) :: mode   
-
-            open(777, file='delta.'//mode//'.dat', status="replace")
-            
-        
-            do I=1,nr         
-                write(777,*) rad(I), (X(I,1)+X(I,2))/(X(nr-10,1)+X(nr-10,2))
-            enddo    
-
-
-
-        end subroutine
-
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-        subroutine initial(rad, X)
-            implicit none
-
-            double precision, dimension(nr,nx), intent(inout) :: X
-            double precision, dimension(nr) :: rad
-            double precision  :: rho,tht,shr,wey
-            double precision :: r, zo, zz, tevo, ctf, cto
-            double precision :: a_flrw
-            integer :: I
-
-            ! initial values: redshift, time instant, density, and expansion rate (the LCDM model assumed)
-       
-         !   call timelcdm(zi,cto)
-         !   call timelcdm(zf,ctf)
-         !   tevo = ctf-cto
-
-            a_flrw = (1.0+zi)/(1.0+0.0d0)
-
-            do I = 1,nr
-                r = dr*I
-                call ltb_profile(r,rho,tht,shr,wey)
-                X(I,:) = [rho,0.0d0,tht,shr,wey,1.0d0,0.0d0,0.0d0,0.0d0,0.0d0,0.0d0,0.0d0]
-                rad(I) = dr*I*a_flrw*1d-3
-            enddo 
-
-            print *, "DEBUG: Set initial data complete."
-
-        end subroutine
-
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         subroutine ltb_profile(r,rho,tht,shr,wey)
             implicit none
@@ -359,5 +267,95 @@ MODULE void_subroutines
 
         
         end subroutine
+
+
+         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        subroutine timelcdm(zo, ctt) 
+            implicit none
+
+            double precision zo,rhb,rhzo,x,arsinh,tzo,ctt
+            double precision ztt,thb
+
+       !     print *, "gkr, lb = ", gkr, lb
+
+            rhzo = gkr*((1.0d0+zo)**3 )
+            x = dsqrt(lb/rhzo)
+            arsinh = dlog(x + dsqrt(x*x + 1d0))
+            ctt = (dsqrt((4d0)/(3d0*lb)))*arsinh
+
+        !    print *, "z,t = ", zo, ctt
+
+        end subroutine timelcdm
+
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        ! MISC. PROGRAM FILES
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        
+
+        subroutine write_X_to_file(counter,X)
+            implicit none
+
+            character(len=50) filename
+            integer, intent(inout) :: counter
+            double precision, dimension(nr,nx), intent(inout) :: X
+
+            write(filename, '(A,:,(I1), A)') 'X.lrs.',counter,'.dat' 
+            open(666, file=filename, status="replace")
+            write(666,*) X
+
+            counter = counter+1
+
+        end subroutine
+
+        subroutine write_delta_to_file(mode, counter, rad, X)
+            implicit none
+
+            character(len=50) filename
+            integer, intent(inout) :: counter
+            double precision, dimension(nr,nx), intent(inout) :: X
+            double precision, dimension(nr), intent(inout) :: rad
+            integer :: I
+            character(len=3) :: mode   
+
+            open(777, file='delta.'//mode//'.dat', status="replace")
+            
+        
+            do I=1,nr         
+                write(777,*) rad(I), (X(I,1)+X(I,2))/(X(nr-10,1)+X(nr-10,2))
+            enddo    
+
+        end subroutine
+
+        subroutine initial(rad, X)
+            implicit none
+
+            double precision, dimension(nr,nx), intent(inout) :: X
+            double precision, dimension(nr) :: rad
+            double precision  :: rho,tht,shr,wey
+            double precision :: r, zo, zz, tevo, ctf, cto
+            double precision :: a_flrw
+            integer :: I
+
+            ! initial values: redshift, time instant, density, and expansion rate (the LCDM model assumed)
+       
+         !   call timelcdm(zi,cto)
+         !   call timelcdm(zf,ctf)
+         !   tevo = ctf-cto
+
+            a_flrw = (1.0+zi)/(1.0+0.0d0)
+
+            do I = 1,nr
+                r = dr*I
+                call ltb_profile(r,rho,tht,shr,wey)
+                X(I,:) = [rho,0.0d0,tht,shr,wey,1.0d0,0.0d0,0.0d0,0.0d0,0.0d0,0.0d0,0.0d0]
+                rad(I) = dr*I*a_flrw*1d-3
+            enddo 
+
+            print *, "DEBUG: Set initial data complete."
+
+        end subroutine
+
+        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 END MODULE void_subroutines  
