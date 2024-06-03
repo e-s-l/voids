@@ -1,166 +1,6 @@
-!
-MODULE program_parameters
-    implicit none
+MODULE void_subroutines  
 
-    integer, parameter :: nx = 12           !number of variables in the system of equations
-    !SPACE & TIME DOMAIN RESOLUTION:
-    integer, parameter :: nr = 200          !number of radial grid points
-    integer, parameter :: nt = 500          !number of time grid points, might make this variable later. 
-    !Cosmological Model Parameters:
-    double precision, parameter :: omega_matter = 0.3
-    double precision, parameter :: omega_lambda = 1.0 - omega_matter
-    double precision, parameter :: H0 = 67.810d0 !
-    !
-    !double precision :: age
-    double precision, parameter :: pi = 4d0*datan(1.0d0)
-    !non-dimensioanlisations/units
-    double precision, parameter :: mu = 1.989d45            ! mass in 10^15 M_{\odot}
-    double precision, parameter :: lu = 3.085678d19         ! length in kpc
-    double precision, parameter :: tu = 31557600*1d6        ! time in 10^6 years
-    !other constants (non-dimensionalised)
-    double precision, parameter :: gcons = (6.6742d-11)*((mu*(tu**2))/(lu**3)) 
-    double precision, parameter :: cms = 299792458          !light-speed in m/s
-    double precision, parameter :: cs = cms*(tu/lu)
-    double precision, parameter :: kap = 8d0*pi*gcons*(1d0/(cs**4))
-    double precision, parameter :: kapc2 = 8d0*pi*gcons*(1d0/(cs**2))
-    double precision, parameter :: Ho = (tu/(lu))*H0
-    double precision, parameter :: gkr = kapc2*omega_matter*(3d0*(((Ho)**2)/(8d0*pi*gcons)))
-
-    double precision, parameter :: lb = 3d0*omega_lambda*(((Ho)**2)/(cs*cs))
-    !
-    double precision, parameter :: zi = 150d0
-    double precision, parameter :: zf = 0.2d0           !final redshift/position of void-lens
-
-    ! Hamaus profile:
-    double precision, parameter :: a = 2.1              !inner slope
-    double precision, parameter :: b = 8.5              !outer slope
-    double precision, parameter :: dc = -0.9            !central depth
-    double precision, parameter :: rv = 22.1d3          !void size
-    double precision, parameter :: rs = 0.88*rv         !shell size
-
-    !initial profile
-    double precision, parameter :: delta0 = -0.032      !depth
-    double precision, parameter :: sigma0 =0.4          !wall thickness
-    double precision, parameter :: r0 = 80              !size
-
-    double precision, parameter :: dr = 6.25*r0/nr      !step size = prefactor*void_size/number of steps
-
-
-    !decay/interaction parameters
-    double precision, parameter :: vin = 0.0d0*(100/cms)    !normalised injection velocity
-    double precision, parameter :: drate =1.0*(Ho/cs)       !normalised decay rate
-
-    double precision :: ti 
-    double precision :: tf 
-    double precision :: dt
-
-    !NOTE: the subroutines could be contained in this module rather than the main program as below...
-
-END MODULE program_parameters
-
-!
-!
-
-PROGRAM TwoFluidLRSEvolution
-    use program_parameters
-
-    implicit none !since don't want variables starting w/ i,j etc. immediately defined as integers!
-
-
-    !!!!!!!!!!!!!!!!
-    ! DECLARATIONS:
-    !!!!!!!!!!!!!!!!
-
-    double precision :: X(nr,nx)        !array of variables across space   
-    double precision :: Xini(nr,nx)        !initial  
-    double precision :: rad(nr)         !vector of radius values for each grid point (depends on model choice)
-    
-    ! for plotting purposes
-    integer :: counter = 0
-    
-    !!!!!!!!!!!!!!!!!!!!
-    !FOR PROGRAM CONTROL
-    !!!!!!!!!!!!!!!!!!!!
-
-    !SET WHICH KIND OF EVOLUTION TO BE PREFORMED:
-    logical, parameter ::  lrs_evolution_mode = .false. 
-    logical, parameter ::  ltb_evolution_mode = .true. 
-    logical, parameter ::  linear_evolution_mode = .true. 
-
-    !
-    character(len=3) :: mode   
-
-    !debug:
-    logical, parameter ::  write_data = .true. 
-    logical, parameter ::  debug_mode = .true. 
-
-    !!!!!!!!!!!!!!!!!!!
-    ! INITIALISATIONS:
-    !!!!!!!!!!!!!!!!!!!
-
-
-
-    call timelcdm(zi, ti)
-    call timelcdm(zf, tf)
-
-    dt = (tf - ti) / (1.0*nt)
-    !!!
-    if (debug_mode) then
-        print *, 'DEBUG: dt = ', dt
-    endif
-    !!!
-
-
-    !!!!!!!!!!!!!!!
-    call initial(rad, Xini)
-    !!!!!!!!!!!!!!!
-
-  !  print *, "gkr, lb = ", gkr, lb
-  !  print *, X(:,1)
-    !
-    if (write_data) then
-        mode="ini"
-        call write_delta_to_file(mode, counter, rad, Xini)      !need to redimensionalise the outputs!
-    !    call write_X_to_file(counter, X)
-    endif
-
-    !!!!!!!!!!!
-    !EVOLUTION
-    !!!!!!!!!!!
-
-    !
-    if (lrs_evolution_mode) then
-        X = Xini
-        mode="LRS"
-         call lrs_evolution(rad,X)  !,R_lrs) ?
-         if (write_data) then
-            call write_delta_to_file(mode, counter, rad, X)  
-        endif
-
-    endif
-    !
-    if (ltb_evolution_mode) then
-        X = Xini
-        mode="LTB"
-        call ltb_evolution(rad,X)
-        if (write_data) then
-            call write_delta_to_file(mode, counter, rad, X)  
-        endif
-    endif
-    !
-    if (linear_evolution_mode) then
-        X = Xini
-        mode = "LIN"   
-        call linear_evolution(rad, X)
-        if (write_data) then
-            call write_delta_to_file(mode, counter, rad, X)  
-        endif
-    endif 
-
-    !
-    !!!!!!!!!!!!!
-    print *, ':)'
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    use void_parameters
     CONTAINS
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -338,6 +178,15 @@ PROGRAM TwoFluidLRSEvolution
 
             ri = r
             rri = 1.0d0
+
+                !!!
+         !   if (debug_mode) then
+         !       print *, 'DEBUG: dt = ', dt
+         !        print *, 'DEBUG: nt = ', nt
+         !   endif
+            !!!
+
+
            
             do I=1,nt
                 re = ri
@@ -511,7 +360,4 @@ PROGRAM TwoFluidLRSEvolution
         
         end subroutine
 
-     
-        !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-END PROGRAM
+END MODULE void_subroutines  

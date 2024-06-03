@@ -1,0 +1,12 @@
+# old versions we are basing this refactoring of off
+old/
+# hidden folders like .git .vscode
+.*/
+# object files prodcued from compilation
+*.o
+# modules files since trying to use these
+*.mod
+# data files produced by the computations
+*.dat
+# exectuables prodcued from compilation (post linking)
+*.out
