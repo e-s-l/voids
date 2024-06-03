@@ -288,7 +288,7 @@ MODULE void_subroutines
                 rad(I) = dr*I*a_flrw*1d-3
             enddo 
 
-            print *, ":)"
+            print *, "DEBUG: Set initial data complete."
 
         end subroutine
 

@@ -3,7 +3,10 @@
 !
 !
 
-PROGRAM TwoFluidLRSEvolution
+PROGRAM voids
+
+    ! include the module files (parameters, subroutines)
+
     use void_parameters
     use void_subroutines
 
@@ -27,7 +30,7 @@ PROGRAM TwoFluidLRSEvolution
 
     !SET WHICH KIND OF EVOLUTION TO BE PREFORMED:
     logical, parameter ::  lrs_evolution_mode = .false. 
-    logical, parameter ::  ltb_evolution_mode = .true. 
+    logical, parameter ::  ltb_evolution_mode = .false. 
     logical, parameter ::  linear_evolution_mode = .true. 
 
     !
@@ -100,8 +103,8 @@ PROGRAM TwoFluidLRSEvolution
         endif
     endif 
 
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    print *, ':)'
-    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    !!!!!!!!!!!!!
+    print *, 'DEBUG: Main program complete :)'
+    !!!!!!!!!!!!!
 
-END PROGRAM
+END PROGRAM voids
